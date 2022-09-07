@@ -25,6 +25,7 @@ import Antlr4Grammars.scala.*;
 import Antlr4Grammars.matlab.*;
 import Antlr4Grammars.ocaml.*;
 import Antlr4Grammars.r.*;
+import Antlr4Grammars.javascript.*;
 
 import java.io.*;
 import java.util.*;
@@ -228,6 +229,9 @@ public final class ANTLRDynamicTokenizer extends Tokenizer {
       return lexer;
     } else if (language.equals("r")) {
       RLexer lexer = new RLexer(CharStreams.fromFileName(fileName));
+      return lexer;
+    } else if (language.equals("javascript")) {
+      JavaScriptLexer lexer = new JavaScriptLexer(CharStreams.fromFileName(fileName));
       return lexer;
     } else {
       String errorMessage = String.format(
