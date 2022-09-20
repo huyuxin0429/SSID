@@ -132,6 +132,7 @@ TemplateStringAtom,Symbol
 '{',Symbol
 '}',Symbol
 ';',Symbol
+',',Symbol
 '=',Symbol
 '?',Symbol
 ':',Symbol
