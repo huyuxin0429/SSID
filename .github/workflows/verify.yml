@@ -1,0 +1,78 @@
+name: Verify
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  linters:
+    name: Linters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby and install gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Install packages
+        run: |
+          yarn install --pure-lockfile
+
+      - name: Run linters
+        run: |
+          bin/rubocop --parallel
+
+      # - name: Run security checks
+      #   run: |
+      #     bin/bundler-audit --update
+      #     bin/brakeman -q -w2
+
+   tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ssid_test
+          MYSQL_USER: root
+          MYSQL_PASSWORD: lostworld
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby and install gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: yarn
+
+      - name: Install packages
+        run: |
+          yarn install --pure-lockfile
+
+      - name: Setup test database
+        env:
+          RAILS_ENV: test
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ssid_test
+          MYSQL_USER: root
+          MYSQL_PASSWORD: lostworld
+        run: |
+          bin/rails db:setup
+
+      - name: Run tests
+        run: bin/rspec
