@@ -1,19 +1,18 @@
 require 'test_helper'
 
 class SessionsControllerTest < ActionController::TestCase
-  test "should get new" do
+  test 'should get new session when requested' do
     get :new
     assert_response :success
   end
 
-  test "should get create" do
+  test 'should direct to sessions page for ' do
     get :create
-    assert_response :success
+    assert_redirected_to controller: 'sessions', action: 'login'
   end
 
-  test "should get destroy" do
+  test 'should auto redirect to index page for unauthorised destroy action' do
     get :destroy
-    assert_response :success
+    assert_redirected_to controller: 'sessions', action: 'index'
   end
-
 end
