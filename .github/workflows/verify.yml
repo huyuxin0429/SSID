@@ -97,6 +97,12 @@ jobs:
 
       - name: Install chrome
         uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 114
+
+      - name: Verify chrome version
+        run: |
+          echo Installed chromium version: ${{ steps.setup-chrome.outputs.chrome-version }} ${{ steps.setup-chrome.outputs.chrome-path }} --version
 
       - name: Setup chromedriver
         uses: nanasess/setup-chromedriver@v2
